@@ -134,17 +134,15 @@ namespace LB {
     LB_callee {};
 
   struct LB_vars:
-    pegtl::rep_max< 1,
-      pegtl::seq<
-        var,
-        seps,
-        pegtl::star<
-          pegtl::seq<
-            pegtl::one< ',' >,
-            seps,
-            var,
-            seps
-          >
+    pegtl::seq<
+      pegtl::rep_max< 1, var >,
+      seps,
+      pegtl::star<
+        pegtl::seq<
+          pegtl::one< ',' >,
+          seps,
+          var,
+          seps
         >
       >
     > {};
@@ -262,7 +260,7 @@ namespace LB {
       pegtl::string< 'i', 'f' >,
       seps,
       pegtl::one< '(' >,
-      seps, var, seps, op, seps, var, seps,
+      seps, t, seps, op, seps, t, seps,
       pegtl::one< ')' >,
       seps,
       label,
@@ -343,16 +341,22 @@ namespace LB {
 
   struct LB_instruction;
 
+  struct scopeStart:
+    pegtl::one< '{' > {};
+
+  struct scopeEnd:
+    pegtl::one< '}' > {};
+
   struct scope:
     pegtl::seq<
-      pegtl::one< '{' >,
+      scopeStart,
       seps,
       pegtl::star<
         LB_instruction,
         seps
       >,
       seps,
-      pegtl::one< '}' >
+      scopeEnd
     > {};
 
   struct LB_instruction:
@@ -410,8 +414,6 @@ namespace LB {
     } catch (const std::exception& e) {
       s.insert(var);
     }
-
-
   }
 
 
@@ -423,8 +425,10 @@ namespace LB {
     pegtl::nothing< Rule > {};
 
   template<> struct action < function_ret_type > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       LB::Function *newF = new LB::Function();
+      scopeStack.clear();
+      // scopeStack.push_back(newF->scope);
       newF->ret_type = new LB::Type(in.string());
 
       p.functions.push_back(newF);
@@ -434,7 +438,8 @@ namespace LB {
   };
 
   template<> struct action < function_name > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+
       LB::Function *currF = p.functions.back();
       currF->name = in.string();
       LB::Program::FUNCS.insert(in.string());
@@ -443,9 +448,8 @@ namespace LB {
   };
 
   template<> struct action < args > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       LB::Function *currF = p.functions.back();
-
 
       for (int k = 0; k < v.size(); k += 2) {
         currF->arguments.push_back(new LB::Var(v[k], v[k+1]));
@@ -457,46 +461,69 @@ namespace LB {
     }
   };
 
+  template<> struct action < scopeStart > {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::Function *currF = p.functions.back();
+      if (scopeStack.size() == 0) {
+        scopeStack.push_back(currF->scope);
+      } else {
+        LB::InsScope * newScope = new LB::InsScope(v);
+        scopeStack.back()->inss.push_back(newScope);
+        scopeStack.push_back(newScope);
+      }
+    }
+  };
+
+  template<> struct action < scopeEnd > {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      scopeStack.pop_back();
+      v.clear();
+    }
+  };
+
+
+
   // template<> struct action < type_var > {
-  //   static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+  //   static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
   //     v.clear();
   //   }
   // };
 
   template<> struct action < ins_call > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
-      LB::Function *currF = p.functions.back();
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
       LB::Instruction *newIns = new LB::InsCall(v);
 
-      currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
       v.clear();
     }
   };
 
   template<> struct action < ins_label > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
-      LB::Function *currF = p.functions.back();
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
       LB::Instruction *newIns = new LB::InsLabel(v);
-      currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
       v.clear();
     }
   };
 
   template<> struct action < ins_type > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
       LB::Function *currF = p.functions.back();
       LB::Instruction *newIns = new LB::InsType(v);
 
       currF->type_map[v[1]] = new LB::Type(v[0]);
 
-      currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
       v.clear();
     }
   };
 
   template<> struct action < ins_v_start > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
-      LB::Function *currF = p.functions.back();
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
       LB::Instruction *newIns;
 
       if (v[1] == "length") {
@@ -516,111 +543,142 @@ namespace LB {
         newIns = new LB::InsOpAssign(v);
       }
 
-      currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
       v.clear();
     }
   };
 
   template<> struct action < ins_if_start > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
-      LB::Function *currF = p.functions.back();
-      // LB::Instruction *newIns = new LB::InsIf(v);
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
+      LB::Instruction *newIns = new LB::InsIf(v);
 
-      // currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
       v.clear();
     }
   };
 
   template<> struct action < ins_return > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
-      LB::Function *currF = p.functions.back();
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
       LB::Instruction *newIns = new LB::InsReturn(v);
 
-      currF->inss.push_back(newIns);
+      currScope->inss.push_back(newIns);
 
       v.clear();
-
     }
   };
 
+  template<> struct action < ins_while > {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
+      LB::Instruction *newIns = new LB::InsWhile(v);
+
+      currScope->inss.push_back(newIns);
+
+      v.clear();
+    }
+  };
+
+  template<> struct action < ins_continue > {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
+      LB::Instruction *newIns = new LB::InsContinue(v);
+
+      currScope->inss.push_back(newIns);
+
+      v.clear();
+    }
+  };
+
+  template<> struct action < ins_break > {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
+      LB::InsScope *currScope = scopeStack.back();
+      LB::Instruction *newIns = new LB::InsBreak(v);
+
+      currScope->inss.push_back(newIns);
+
+      v.clear();
+    }
+  };
 
   //
   // Actions to collect string from rules, should be a better way.
   //
   template<> struct action < var > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < s_new > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < type > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < varSqureT > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < Num > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < t > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < label > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < callee > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < op > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < call > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < length > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < Array > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
 
   template<> struct action < Tuple > {
-    static void apply( const pegtl::input & in, LB::Program & p, std::vector<std::string> & v ) {
+    static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> scopeStack) {
       v.push_back(in.string());
     }
   };
@@ -642,8 +700,9 @@ namespace LB {
 
     LB::Program p;
     // LB::Instruction ti; // temp instruction
-    std::vector< std::string > v;
-    pegtl::file_parser(fileName).parse< LB::LB_grammer, LB::action > (p, v);
+    std::vector<std::string> v;
+    std::vector<LB::InsScope *> scopeStack;
+    pegtl::file_parser(fileName).parse< LB::LB_grammer, LB::action > (p, v, scopeStack);
 
     return p;
   }

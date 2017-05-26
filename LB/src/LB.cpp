@@ -65,21 +65,6 @@ namespace LB {
    // Ins
   ///////
 
-  LB::InsBr::InsBr(std::vector<std::string> & v) {
-    // br vars[0] (vars[1] vars[2])?
-    for (int k = 0; k < v.size(); k++) {
-      LB::Var* var = new LB::Var(v[k]);
-      this->vars.push_back(var);
-    }
-  }
-
-  void LB::InsBr::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\tbr";
-    for (auto v : this->vars) {
-      o << " " << v->toString();
-    }
-  }
-
   LB::InsReturn::InsReturn(std::vector<std::string> & v) {
     // return (vars[0])?
     if (v.size() > 0) {
@@ -88,10 +73,10 @@ namespace LB {
     }
   }
 
-  void LB::InsReturn::toIR(std::ofstream &o, LB::Function * currF) {
+  void LB::InsReturn::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
     o << "\n\treturn";
-    if (this->vars.size() > 0) {
-      o << " " << this->vars[0]->toString();
+    if (this->vars.size() == 1) {
+      o << " " << this->vars[0]->toString(path);
     }
   }
 
@@ -100,7 +85,7 @@ namespace LB {
     LB::Var* var = new LB::Var(v[0]);
     this->vars.push_back(var);
 
-    var = new LB::Var(v[2], false, true);
+    var = new LB::Var(v[2]);
     this->vars.push_back(var);
     for (int k = 3; k < v.size(); k++) {
       var = new LB::Var(v[k]);
@@ -108,16 +93,16 @@ namespace LB {
     }
   }
 
-  void LB::InsAssignCall::toIR(std::ofstream &o, LB::Function * currF) {
-    if (LB::Program::FUNCS.count(this->vars[1]->toString())) {
-      o << "\n\t" << this->vars[0]->toString() << " <- call :" << this->vars[1]->toString() << "(";
+  void LB::InsAssignCall::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    if (LB::Program::FUNCS.count(this->vars[1]->toString(path))) {
+      o << "\n\t" << this->vars[0]->toString(path) << " <- call :" << this->vars[1]->toString(path) << "(";
     } else {
-      o << "\n\t" << this->vars[0]->toString() << " <- call " << this->vars[1]->toString() << "(";
+      o << "\n\t" << this->vars[0]->toString(path) << " <- call " << this->vars[1]->toString(path) << "(";
     }
     if (this->vars.size() > 2) {
-      o << this->vars[2]->toString();
+      o << this->vars[2]->toString(path);
       for (int k = 3; k < this->vars.size(); k++) {
-        o << ", " << this->vars[k]->toString();
+        o << ", " << this->vars[k]->toString(path);
       }
       o << ")";
     }
@@ -128,7 +113,7 @@ namespace LB {
     LB::Var* var;
     for (int k = 0; k < v.size(); k++) {
       if (k == 2) {
-        var = new LB::Var(v[k], false, true);
+        var = new LB::Var(v[k]);
       } else {
         var = new LB::Var(v[k]);
       }
@@ -136,13 +121,11 @@ namespace LB {
     }
   }
 
-  void LB::InsOpAssign::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->toString() << " <- " << this->vars[1]->toString() << " " << this->vars[2]->toString() << " " << this->vars[3]->toString();
-
+  void LB::InsOpAssign::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path) << " <- " << this->vars[1]->toString(path) << " " << this->vars[2]->toString(path) << " " << this->vars[3]->toString(path);
   }
 
   LB::InsType::InsType(std::vector<std::string> & v) {
-    // vars[0]->type vars[0]
 
     for (int k = 1; k < v.size(); k++) {
       LB::Var* var = new LB::Var(v[0], v[k]);
@@ -151,17 +134,15 @@ namespace LB {
 
   }
 
-  void LB::InsType::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->type->toString() << " " << this->vars[0]->toString();
-
-    if (this->vars[0]->type->type == LB::TYPE::TUPLE || (this->vars[0]->type->type == LB::TYPE::INT && this->vars[0]->type->arr_count > 0)) {
-      o << "\n\t" << this->vars[0]->name << " <- 0";
+  void LB::InsType::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    for (int k = 0; k < this->vars.size(); k++) {
+      o << "\n\t" << this->vars[k]->type->toString() << " " << this->vars[k]->toString(path);
     }
   }
 
   LB::InsCall::InsCall(std::vector<std::string> & v) {
     // call vars[0](vars[1].. vars[n])
-    LB::Var* var = new LB::Var(v[1], false, true);
+    LB::Var* var = new LB::Var(v[1]);
     this->vars.push_back(var);
 
     for (int k = 2; k < v.size(); k++) {
@@ -170,25 +151,24 @@ namespace LB {
     }
   }
 
-  void LB::InsCall::toIR(std::ofstream &o, LB::Function * currF) {
+  void LB::InsCall::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
 
-    if (LB::Program::FUNCS.count(this->vars[0]->toString())) {
-      o << "\n\tcall :" << this->vars[0]->toString() << "(";
+    if (LB::Program::FUNCS.count(this->vars[0]->toString(path))) {
+      o << "\n\tcall :" << this->vars[0]->toString(path) << "(";
     } else {
-      o << "\n\tcall " << this->vars[0]->toString() << "(";
+      o << "\n\tcall " << this->vars[0]->toString(path) << "(";
     }
 
     if (this->vars.size() > 1) {
-      o << this->vars[1]->toString();
+      o << this->vars[1]->toString(path);
       for (int k = 2; k < this->vars.size(); k++) {
-        o << ", " << this->vars[k]->toString();
+        o << ", " << this->vars[k]->toString(path);
       }
       o << ")";
     }
   }
 
   LB::InsAssign::InsAssign(std::vector<std::string> & v) {
-    // vars[0] <- vars[1]
     LB::Var* var;
     if (v[0].find("[") != std::string::npos) {
       var = new LB::Var(v[0], true);
@@ -205,41 +185,8 @@ namespace LB {
     this->vars.push_back(var);
   }
 
-  void LB::InsAssign::toIR(std::ofstream &o, LB::Function * currF) {
-    std::string suffix = std::to_string(rand());
-    bool allocChecked = false;
-    bool checkID;
-    for (int k = 0; k < 2; k++) {
-      if (this->vars[k]->ts.size() > 0) {
-        o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
-        o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
-        checkID = k;
-        allocChecked = true;
-      }
-    }
-    if (allocChecked) {
-      o << "\n\t:notalloc_" << suffix;
-      o << "\n\tcall array-error(0, 0)";
-      o << "\n\tbr :alloc_" << suffix;
-      o << "\n\t:alloc_" << suffix;
-
-      for (int j = 0; j < this->vars[checkID]->ts.size(); j++) {
-        o << "\n\t%l_" << j << "_" << suffix << " <- length " << this->vars[checkID]->name << " " << j;
-        o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
-        o << "\n\t%validLen_" << j << "_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString() << " < %l_" << j << "_" << suffix;
-
-        o << "\n\tbr %validLen_" << j << "_" << suffix << " :validLen_" << j << "_" << suffix << " :invalidLen_" << j << "_"  << suffix;
-        o << "\n\t:invalidLen_" << j << "_" << suffix;
-        o << "\n\t%err_index_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString();
-        o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " << 1";
-        o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " + 1";
-        o << "\n\tcall array-error(" << this->vars[checkID]->name << ", %err_index_" << suffix << ")";
-        o << "\n\tbr :validLen_" << j << "_" << suffix;
-        o << "\n\t:validLen_" << j << "_" << suffix;
-      }
-    }
-
-    o << "\n\t" << this->vars[0]->toString() << " <- " << this->vars[1]->toString();
+  void LB::InsAssign::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path) << " <- " << this->vars[1]->toString(path);
   }
 
   LB::InsLength::InsLength(std::vector<std::string> & v) {
@@ -248,12 +195,12 @@ namespace LB {
     this->vars.push_back(var);
     var = new LB::Var(v[2]);
     this->vars.push_back(var);
-    var = new LB::Var(v[3], false, true);
+    var = new LB::Var(v[3]);
     this->vars.push_back(var);
   }
 
-  void LB::InsLength::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
+  void LB::InsLength::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path) << " <- length " << this->vars[1]->toString(path) << " " << this->vars[2]->toString(path);
   }
 
   LB::InsNewArray::InsNewArray(std::vector<std::string> & v) {
@@ -266,10 +213,10 @@ namespace LB {
     }
   }
 
-  void LB::InsNewArray::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->toString() << " <- new Array(" << this->vars[1]->toString();
+  void LB::InsNewArray::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path) << " <- new Array(" << this->vars[1]->toString(path);
     for (int k = 2; k < this->vars.size(); k++) {
-      o << ", " << this->vars[k]->toString();
+      o << ", " << this->vars[k]->toString(path);
     }
     o << ")";
   }
@@ -282,8 +229,8 @@ namespace LB {
     this->vars.push_back(var);
   }
 
-  void LB::InsNewTuple::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->toString() << " <- new Tuple(" << this->vars[1]->toString() << ")";
+  void LB::InsNewTuple::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path) << " <- new Tuple(" << this->vars[1]->toString(path) << ")";
   }
 
   LB::InsLabel::InsLabel(std::vector<std::string> & v) {
@@ -292,23 +239,54 @@ namespace LB {
     this->vars.push_back(var);
   }
 
-  void LB::InsLabel::toIR(std::ofstream &o, LB::Function * currF) {
-    o << "\n\t" << this->vars[0]->toString();
+  void LB::InsLabel::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\t" << this->vars[0]->toString(path);
+  }
+
+  LB::InsContinue::InsContinue(std::vector<std::string> & v) {
+  }
+
+  void LB::InsContinue::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+  }
+
+  LB::InsBreak::InsBreak(std::vector<std::string> & v) {
+  }
+
+  void LB::InsBreak::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+  }
+
+  LB::InsScope::InsScope(std::vector<std::string> & v) {
+  }
+
+  void LB::InsScope::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+  }
+
+  LB::InsIf::InsIf(std::vector<std::string> & v) {
+  }
+
+  void LB::InsIf::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+  }
+
+  LB::InsWhile::InsWhile(std::vector<std::string> & v) {
+  }
+
+  void LB::InsWhile::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
   }
 
     ///////
    // Var
   ///////
 
-  std::string LB::Var::toString() {
-    // if (this->name[0] == '%') {
-    //   return this->name.substr(1, this->name.size()-1);
-    // }
+  std::string LB::Var::toString(std::string path) {
+
     std::string res = this->name;
+    if (this->name[0] == '%') {
+      res += path;
+    }
 
     for (auto t : this->ts) {
       res += "[";
-      res += t->toString();
+      res += t->toString(path);
       res += "]";
     }
     return res;
@@ -319,7 +297,7 @@ namespace LB {
     this->type = new LB::Type(t);
   }
 
-  LB::Var::Var(std::string & str, bool hasT, bool avoidEncode) {
+  LB::Var::Var(std::string & str, bool hasT) {
     if (hasT) {
       int r = 0;
       while (str[r] != '[') {
@@ -330,17 +308,13 @@ namespace LB {
       for (; r < str.size(); r++) {
         if (str[r] == ']') {
           std::string sub = str.substr(l, r - l);
-          LB::Var* t = new LB::Var(sub, false, true);
+          LB::Var* t = new LB::Var(sub);
           this->ts.push_back(t);
           l = r + 2;
         }
       }
     } else {
-      if (!avoidEncode && str[0] != ':' && str[0] != '%') {
-        this->name = std::to_string((std::stoll(str) << 1) + 1);
-      } else {
-        this->name = str;
-      }
+      this->name = str;
       this->type = new LB::Type(this->name, true);
     }
   }
