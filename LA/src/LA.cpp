@@ -366,7 +366,7 @@ namespace LA {
   }
 
   void LA::InsLength::toIR(std::ofstream &o, LA::Function * currF) {
-    this->decode(o);
+    // this->decode(o);
     o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
   }
 
@@ -377,7 +377,7 @@ namespace LA {
 
   std::vector<LA::Var *> LA::InsLength::toDecode() {
     std::vector<LA::Var *> res;
-    res.push_back(this->vars[2]);
+    // res.push_back(this->vars[2]);
     return res;
   }
 
