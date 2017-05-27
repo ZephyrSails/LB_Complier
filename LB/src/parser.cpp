@@ -473,7 +473,7 @@ namespace LB {
         LB::InsScope * newScope = currF->scope;
         scopeStack.push_back(newScope);
         // std::cout << "probe 011, \n";
-        std::cout << scopeStack.size() << "\n";
+        // std::cout << scopeStack.size() << "\n";
       } else {
         LB::InsScope * newScope = new LB::InsScope(v);
         scopeStack.back()->inss.push_back(newScope);

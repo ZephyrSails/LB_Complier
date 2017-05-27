@@ -273,9 +273,18 @@ namespace LB {
   }
 
   LB::InsIf::InsIf(std::vector<std::string> & v) {
+    // if (vars[0] vars[1] vars[2]) vars[3] vars[4]
+    for (auto str : v) {
+      LB::Var* var = new LB::Var(str);
+      this->vars.push_back(var);
+    }
   }
 
   void LB::InsIf::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    std::string suffix = std::to_string(rand());
+    o << "\n\tint64 %temp_" << suffix;
+    o << "\n\t%temp_" << suffix << " <- " << this->vars[0]->toString(path) << " " << this->vars[1]->toString(path) << " " << this->vars[2]->toString(path);
+    o << "\n\tbr %temp_" << suffix << " " << this->vars[3]->toString(path) << " " << this->vars[4]->toString(path);
   }
 
   LB::InsWhile::InsWhile(std::vector<std::string> & v) {
