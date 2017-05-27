@@ -135,7 +135,7 @@ namespace L3 {
 
       std::vector< L3::Instance * > leaf;
       if (this->MatchTile(ins, this->tiles[k], leaf)) {
-        L3::debug("k = " + std::to_string(k) + " Matched " + TMAP[k]);
+        // L3::debug("k = " + std::to_string(k) + " Matched " + TMAP[k]);
 
         stack.push_back(std::make_tuple(k, ins));
 
@@ -146,9 +146,9 @@ namespace L3 {
         return;
       }
     }
-    L3::debug("stack->size(): " + std::to_string(stack.size()));
+    // L3::debug("stack->size(): " + std::to_string(stack.size()));
     if (stack.size() == 0) {
-      L3::debug("didn't matched anything!!!!!");
+      // L3::debug("didn't matched anything!!!!!");
     }
   }
 
