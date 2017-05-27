@@ -378,7 +378,7 @@ namespace LA {
 
   std::vector<LA::Var *> LA::InsLength::toDecode() {
     std::vector<LA::Var *> res;
-    // res.push_back(this->vars[2]);
+    res.push_back(this->vars[2]);
     return res;
   }
 
