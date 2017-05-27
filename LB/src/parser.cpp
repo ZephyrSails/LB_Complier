@@ -465,14 +465,14 @@ namespace LB {
 
   template<> struct action < scopeStart > {
     static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> & scopeStack) {
-      std::cout << "probe01 \n";
+      // std::cout << "probe01 \n";
       LB::Function *currF = p.functions.back();
       if (scopeStack.size() == 0) {
 
-        std::cout << "probe 010, " << currF->scope << "\n";
+        // std::cout << "probe 010, " << currF->scope << "\n";
         LB::InsScope * newScope = currF->scope;
         scopeStack.push_back(newScope);
-        std::cout << "probe 011, \n";
+        // std::cout << "probe 011, \n";
         std::cout << scopeStack.size() << "\n";
       } else {
         LB::InsScope * newScope = new LB::InsScope(v);
@@ -484,7 +484,7 @@ namespace LB {
 
   template<> struct action < scopeEnd > {
     static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> & scopeStack) {
-      std::cout << "probe02 \n";
+      // std::cout << "probe02 \n";
       scopeStack.pop_back();
       v.clear();
     }
@@ -569,18 +569,18 @@ namespace LB {
 
   template<> struct action < ins_return > {
     static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> & scopeStack) {
-      std::cout << "probe ret, \n";
-      std::cout << "probe ret, " << scopeStack.size() << "\n";
+      // std::cout << "probe ret, \n";
+      // std::cout << "probe ret, " << scopeStack.size() << "\n";
       LB::InsScope * currScope = scopeStack.back();
-      std::cout << "probe ret 03, \n";
+      // std::cout << "probe ret 03, \n";
       LB::Instruction *newIns = new LB::InsReturn(v);
-      std::cout << "probe ret 04, \n";
-      std::cout << "currScope 04, " << currScope->inss.size() << "\n";
-      std::cout << "scopeStack.back() 04, " << scopeStack.back() << "\n";
+      // std::cout << "probe ret 04, \n";
+      // std::cout << "currScope 04, " << currScope->inss.size() << "\n";
+      // std::cout << "scopeStack.back() 04, " << scopeStack.back() << "\n";
       currScope->inss.push_back(newIns);
-      std::cout << "probe ret 05, \n";
+      // std::cout << "probe ret 05, \n";
       v.clear();
-      std::cout << "probe ret, a\n";
+      // std::cout << "probe ret, a\n";
     }
   };
 

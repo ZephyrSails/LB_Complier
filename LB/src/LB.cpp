@@ -67,9 +67,9 @@ namespace LB {
 
   LB::InsReturn::InsReturn(std::vector<std::string> & v) {
     // return (vars[0])?
-    std::cout << "probe ret,000 \n";
+    // std::cout << "probe ret,000 \n";
     if (v.size() > 0) {
-      std::cout << "probe v[0], : " << v.size() << "\n";
+      // std::cout << "probe v[0], : " << v.size() << "\n";
       LB::Var* var = new LB::Var(v[0]);
       this->vars.push_back(var);
     }
