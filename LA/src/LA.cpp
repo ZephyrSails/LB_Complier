@@ -361,12 +361,13 @@ namespace LA {
     this->vars.push_back(var);
     var = new LA::Var(v[2]);
     this->vars.push_back(var);
-    var = new LA::Var(v[3], false, true);
+    // var = new LA::Var(v[3], false, true);
+    var = new LA::Var(v[3]);
     this->vars.push_back(var);
   }
 
   void LA::InsLength::toIR(std::ofstream &o, LA::Function * currF) {
-    // this->decode(o);
+    this->decode(o);
     o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
   }
 
