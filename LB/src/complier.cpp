@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 
   LB::Program p = LB::LB_parse_file(argv[optind]);
 
+  std::cout << "probe0 \n";
   for (auto f : p.functions) {
     outputFile << f->ret_type->toString() << " " << f->name << " ( ";
     if (f->arguments.size() > 0) {
@@ -48,6 +49,7 @@ int main(int argc, char **argv) {
     // }
     int scopeCount = 0;
     for (auto ins : f->scope->inss) {
+      std::cout << "probe1 \n";
       if (typeid(*ins) == typeid(LB::InsScope)) {
         ins->toIR(outputFile, f, std::to_string(scopeCount));
         scopeCount += 1;

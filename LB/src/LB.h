@@ -152,7 +152,7 @@ namespace LB {
 
   class InsScope: public Instruction {
   public:
-    std::vector< LB::Instruction * > inss;
+    std::vector<LB::Instruction *> inss;
     InsScope(std::vector<std::string> & v);
     void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
@@ -160,7 +160,7 @@ namespace LB {
   struct Function {
     Type * ret_type;
     std::string name;
-    std::map< std::string, LB::Type * > type_map;
+    std::map<std::string, LB::Type *> type_map;
     std::vector< LB::Var * > arguments;
     LB::InsScope * scope;
   };

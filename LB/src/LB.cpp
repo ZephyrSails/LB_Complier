@@ -67,7 +67,9 @@ namespace LB {
 
   LB::InsReturn::InsReturn(std::vector<std::string> & v) {
     // return (vars[0])?
+    std::cout << "probe ret,000 \n";
     if (v.size() > 0) {
+      std::cout << "probe v[0], : " << v.size() << "\n";
       LB::Var* var = new LB::Var(v[0]);
       this->vars.push_back(var);
     }
@@ -259,6 +261,15 @@ namespace LB {
   }
 
   void LB::InsScope::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    int scopeCount = 0;
+    for (auto ins : this->inss) {
+      if (typeid(*ins) == typeid(LB::InsScope)) {
+        ins->toIR(o, currF, path + "_" + std::to_string(scopeCount));
+        scopeCount += 1;
+      } else {
+        ins->toIR(o, currF, path);
+      }
+    }
   }
 
   LB::InsIf::InsIf(std::vector<std::string> & v) {
@@ -280,8 +291,8 @@ namespace LB {
   std::string LB::Var::toString(std::string path) {
 
     std::string res = this->name;
-    if (this->name[0] == '%') {
-      res += path;
+    if (this->name[0] == '%' && path != "") {
+      res += "_" + path;
     }
 
     for (auto t : this->ts) {
