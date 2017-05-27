@@ -211,10 +211,10 @@ namespace LA {
           pegtl::sor<
                     //  pegtl::one< '(' >, seps, argv, seps, pegtl::one< ')' >
             pegtl::seq<
-              Array, pegtl::one< '(' >, seps, argv, seps, pegtl::one< ')' >
+              Array, seps, pegtl::one< '(' >, seps, argv, seps, pegtl::one< ')' >
             >,
             pegtl::seq<
-              Tuple, pegtl::one< '(' >, seps, t, seps, pegtl::one< ')' >
+              Tuple, seps, pegtl::one< '(' >, seps, t, seps, pegtl::one< ')' >
             >
           >
         >,
