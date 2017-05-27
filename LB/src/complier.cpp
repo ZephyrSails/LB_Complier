@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 
 
   std::ofstream outputFile;
-  outputFile.open("prog.LA");
+  outputFile.open("prog.a");
 
   LB::Program p = LB::LB_parse_file(argv[optind]);
 
