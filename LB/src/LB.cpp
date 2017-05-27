@@ -97,7 +97,7 @@ namespace LB {
 
   void LB::InsAssignCall::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
     if (LB::Program::FUNCS.count(this->vars[1]->toString(path))) {
-      o << "\n\t" << this->vars[0]->toString(path) << " <- call :" << this->vars[1]->toString(path) << "(";
+      o << "\n\t" << this->vars[0]->toString(path) << " <- call " << this->vars[1]->toString(path) << "(";
     } else {
       o << "\n\t" << this->vars[0]->toString(path) << " <- call " << this->vars[1]->toString(path) << "(";
     }
@@ -156,7 +156,7 @@ namespace LB {
   void LB::InsCall::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
 
     if (LB::Program::FUNCS.count(this->vars[0]->toString(path))) {
-      o << "\n\tcall :" << this->vars[0]->toString(path) << "(";
+      o << "\n\tcall " << this->vars[0]->toString(path) << "(";
     } else {
       o << "\n\tcall " << this->vars[0]->toString(path) << "(";
     }
