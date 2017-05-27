@@ -26,4 +26,4 @@ LA/prog.IR
 
 LB/bin/*
 LB/obj/*
-LB/prog.LA
+LB/prog.a

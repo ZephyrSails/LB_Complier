@@ -287,10 +287,10 @@ namespace L3 {
 
   void insert(std::set<std::string> & s, std::string var) {
 
-    for (auto reg : s)
-    {
-        std::cout << reg << " ";
-    }
+    // for (auto reg : s)
+    // {
+    //     std::cout << reg << " ";
+    // }
 
     if (var[0] == ':') {
       return;
@@ -328,7 +328,7 @@ namespace L3 {
       L3::Function *currentF = p.functions.back();
 
       for (int k = 0; k < v.size(); k++) {
-        std::cout << "foud arg: " << v[k] << "\n";
+        // std::cout << "foud arg: " << v[k] << "\n";
         currentF->arguments.push_back(new L3::Var(v[k]));
       }
 

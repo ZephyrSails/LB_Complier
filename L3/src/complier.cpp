@@ -50,9 +50,9 @@ int main(int argc, char **argv) {
     }
 
     L3::liveness(f);
-    L3::printFunc(*f);
+    // L3::printFunc(*f);
     L3::mergeFunc(f);
-    L3::printFunc(*f);
+    // L3::printFunc(*f);
 
     std::string f_name = f->name;
     // f_name.erase(0, 1);

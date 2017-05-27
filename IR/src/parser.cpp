@@ -447,7 +447,7 @@ namespace IR {
     static void apply( const pegtl::input & in, IR::Program & p, std::vector<std::string> & v ) {
       IR::Function *currF = p.functions.back();
       currF->name = in.string();
-      std::cout << "new func: " << currF->name << "\n";
+      // std::cout << "new func: " << currF->name << "\n";
       v.clear();
     }
   };

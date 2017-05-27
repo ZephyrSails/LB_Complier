@@ -256,17 +256,17 @@ namespace IR {
 
   IR::Var::Var(std::string & str, bool hasT) {
     if (hasT) {
-      std::cout << "str: " << str;
+      // std::cout << "str: " << str;
       int r = 0;
       while (str[r] != '[') {
-        std::cout << "r: " << r << " str[r]: " << str[r] << "\n";
+        // std::cout << "r: " << r << " str[r]: " << str[r] << "\n";
         r++;
       }
       this->name = str.substr(0, r);
       int l = r + 1;
       for (; r < str.size(); r++) {
         if (str[r] == ']') {
-          std::cout << "r: " << r << " str[r]: " << str[r] << "\n";
+          // std::cout << "r: " << r << " str[r]: " << str[r] << "\n";
           std::string sub = str.substr(l, r - l);
           IR::Var* t = new IR::Var(sub);
           this->ts.push_back(t);
