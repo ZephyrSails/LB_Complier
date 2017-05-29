@@ -161,9 +161,10 @@ namespace LA {
   struct Function {
     Type * ret_type;
     std::string name;
-    std::map< std::string, LA::Type * > type_map;
-    std::vector< LA::Var * > arguments;
-    std::vector< LA::Instruction * > inss;
+    std::map<std::string, LA::Type *> type_map;
+    std::vector<LA::Var *> arguments;
+    std::vector<LA::Instruction *> inss;
+    std::set<std::string> checkedVars = {};
   };
 
   class Program {

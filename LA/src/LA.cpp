@@ -303,11 +303,12 @@ namespace LA {
     bool allocChecked = false;
     bool checkID;
     for (int k = 0; k < 2; k++) {
-      if (this->vars[k]->ts.size() > 0) {
+      if (this->vars[k]->ts.size() > 0 && currF->checkedVars.count(this->vars[k]->toString()) == 0) {
         o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
         o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
         checkID = k;
         allocChecked = true;
+        currF->checkedVars.insert(this->vars[k]->toString());
       }
     }
     if (allocChecked) {
