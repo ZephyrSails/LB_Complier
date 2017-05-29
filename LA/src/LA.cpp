@@ -227,7 +227,7 @@ namespace LA {
     o << "\n\t" << this->vars[0]->type->toString() << " " << this->vars[0]->toString();
 
     if (this->vars[0]->type->type == LA::TYPE::TUPLE || (this->vars[0]->type->type == LA::TYPE::INT && this->vars[0]->type->arr_count > 0)) {
-      o << "\n\t" << this->vars[0]->name << " <- 1";
+      o << "\n\t" << this->vars[0]->name << " <- 0";
     }
   }
 
@@ -304,9 +304,9 @@ namespace LA {
     bool checkID;
     for (int k = 0; k < 2; k++) {
       if (this->vars[k]->ts.size() > 0 && currF->checkedVars.count(this->vars[k]->toString()) == 0) {
-        // o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
-        // o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
-        o << "\n\tbr " << this->vars[k]->name << " :alloc_" << suffix << " :notalloc_" << suffix;
+        o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
+        o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
+        // o << "\n\tbr " << this->vars[k]->name << " :alloc_" << suffix << " :notalloc_" << suffix;
         checkID = k;
         allocChecked = true;
         currF->checkedVars.insert(this->vars[k]->toString());
