@@ -588,7 +588,7 @@ namespace LB {
     static void apply(const pegtl::input & in, LB::Program & p, std::vector<std::string> & v, std::vector<LB::InsScope *> & scopeStack) {
       LB::InsScope *currScope = scopeStack.back();
       LB::Instruction *newIns = new LB::InsWhile(v);
-
+      std::cout << "probe while\n";
       currScope->inss.push_back(newIns);
 
       v.clear();

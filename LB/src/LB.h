@@ -58,10 +58,13 @@ namespace LB {
     std::string toString(std::string path);
   };
 
+  class InsWhile;
+
   class Instruction {
   public:
     std::string op;
     std::vector< LB::Var * > vars;
+    LB::Instruction * loop;
 
     virtual void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path) = 0;
   };

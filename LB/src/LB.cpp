@@ -249,12 +249,15 @@ namespace LB {
   }
 
   void LB::InsContinue::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    o << "\n\tbr " << this->loop->vars[5]->toString(path);
   }
 
   LB::InsBreak::InsBreak(std::vector<std::string> & v) {
   }
 
   void LB::InsBreak::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    std::cout << "Break toIR\n";
+    o << "\n\tbr " << this->loop->vars[4]->toString(path);
   }
 
   LB::InsScope::InsScope(std::vector<std::string> & v) {
@@ -288,9 +291,25 @@ namespace LB {
   }
 
   LB::InsWhile::InsWhile(std::vector<std::string> & v) {
+    std::cout << "while new\n";
+    // :vars[3]_beacon;
+    // while (vars[0] vars[1] vars[2]) :vars[3] :vars[4]
+    for (int k = 0; k < v.size(); k++) {
+      LB::Var* var = new LB::Var(v[k]);
+      this->vars.push_back(var);
+    }
+    std::string suffix = v[3] + "_" + std::to_string(rand());
+    LB::Var* var = new LB::Var(suffix);
+    this->vars.push_back(var);
   }
 
   void LB::InsWhile::toIR(std::ofstream &o, LB::Function * currF, std::string path) {
+    std::cout << "while toIR\n";
+    o << "\n\t" << this->vars[5]->toString(path);
+    std::string suffix = std::to_string(rand());
+    o << "\n\tint64 %temp_" << suffix;
+    o << "\n\t%temp_" << suffix << " <- " << this->vars[0]->toString(path) << " " << this->vars[1]->toString(path) << " " << this->vars[2]->toString(path);
+    o << "\n\tbr %temp_" << suffix << " " << this->vars[3]->toString(path) << " " << this->vars[4]->toString(path);
   }
 
     ///////
