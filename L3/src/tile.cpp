@@ -52,7 +52,7 @@ namespace L3 {
     v = {"V1", "V2", "+", "V3"};
     this->tiles[TNAME::AT] = new L3::Var("V1");
     this->tiles[TNAME::AT]->instances.push_back(new L3::Op(v));
-    v = {"V3", "V3", "*", "8"};
+    v = {"V3", "V3", "*", "E"};
     this->tiles[TNAME::AT]->instances[0]->instances[1]->instances.push_back(new L3::Op(v));
 
     // this->tiles[TNAME::AT] = new L3::Var("V1");

@@ -17,6 +17,9 @@ namespace L3 {
       if (L3::OP.count(tile->name) > 0) {
         return (tile->name == this->name);
       }
+      if (tile->name == "E") {
+        return (L3::E.count(this->name) > 0);
+      }
       return true;
     }
     return false;
