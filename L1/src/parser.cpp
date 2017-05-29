@@ -198,7 +198,7 @@ namespace L1 {
 
   struct L1_E:
     pegtl::sor<
-      pegtl::one< '1' >,
+      pegtl::one< '0' >,
       pegtl::one< '2' >,
       pegtl::one< '4' >,
       pegtl::one< '8' >
