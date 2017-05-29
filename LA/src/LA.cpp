@@ -319,9 +319,11 @@ namespace LA {
       o << "\n\t:alloc_" << suffix;
 
       for (int j = 0; j < this->vars[checkID]->ts.size(); j++) {
-        o << "\n\t%l_" << j << "_" << suffix << " <- length " << this->vars[checkID]->name << " " << j;
-        o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
-        o << "\n\t%validLen_" << j << "_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString() << " < %l_" << j << "_" << suffix;
+        // o << "\n\t%l_" << j << "_" << suffix << " <- length " << this->vars[checkID]->name << " " << j;
+        // o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
+        // o << "\n\t%validLen_" << j << "_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString() << " < %l_" << j << "_" << suffix;
+
+        currF->getLengthOfArr(o, this->vars[checkID], suffix, j);
 
         o << "\n\tbr %validLen_" << j << "_" << suffix << " :validLen_" << j << "_" << suffix << " :invalidLen_" << j << "_"  << suffix;
         o << "\n\t:invalidLen_" << j << "_" << suffix;
@@ -335,6 +337,20 @@ namespace LA {
     }
 
     o << "\n\t" << this->vars[0]->toString() << " <- " << this->vars[1]->toString();
+  }
+
+  void LA::Function::getLengthOfArr(std::ofstream &o, LA::Var * arr, std::string suffix, int j) {
+    // std::cout << "hello size(): " << this->checkedLen.size() << "\n";
+    if (this->checkedLen.count(arr->name + "_" + std::to_string(j)) == 0) {
+      // std::cout << "hello count = 0 \n";
+      o << "\n\t%l_" << j << "_" << suffix << " <- length " << arr->name << " " << j;
+      o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
+      o << "\n\t%validLen_" << j << "_" << suffix << " <- " << arr->ts[j]->toString() << " < %l_" << j << "_" << suffix;
+      this->checkedLen[arr->name + "_" + std::to_string(j)] = "%l_" + std::to_string(j) + "_" + suffix;
+    } else {
+      // std::cout << "hello count > 0 \n";
+      o << "\n\t%validLen_" << j << "_" << suffix << " <- " << arr->ts[j]->toString() << " < " << this->checkedLen[arr->name + "_" + std::to_string(j)];
+    }
   }
 
   std::vector<LA::Var *> LA::InsAssign::toEncode() {
@@ -370,7 +386,10 @@ namespace LA {
 
   void LA::InsLength::toIR(std::ofstream &o, LA::Function * currF) {
     this->decode(o);
+    std::string suffix = std::to_string(rand());
     o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
+    o << "\n\t" << this->vars[0]->toString() << "_" << suffix << " <- " << this->vars[0]->toString() << " >> 1";
+    currF->checkedLen[this->vars[1]->toString() + "_" + this->vars[2]->toString()] = this->vars[0]->toString() + "_" + suffix;
   }
 
   std::vector<LA::Var *> LA::InsLength::toEncode() {

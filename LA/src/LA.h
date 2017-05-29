@@ -158,13 +158,16 @@ namespace LA {
     std::vector<LA::Var *> toDecode();
   };
 
-  struct Function {
+  class Function {
+  public:
     Type * ret_type;
     std::string name;
     std::map<std::string, LA::Type *> type_map;
     std::vector<LA::Var *> arguments;
     std::vector<LA::Instruction *> inss;
     std::set<std::string> checkedVars = {};
+    void getLengthOfArr(std::ofstream &o, LA::Var * arr, std::string suffix, int j);
+    std::map<std::string, std::string> checkedLen = {};
   };
 
   class Program {
