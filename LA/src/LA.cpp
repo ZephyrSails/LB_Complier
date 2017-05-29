@@ -306,7 +306,7 @@ namespace LA {
       if (this->vars[k]->ts.size() > 0 && currF->checkedVars.count(this->vars[k]->toString()) == 0) {
         // o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
         // o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
-        o << "\n\tbr " << this->vars[k]->name << " :notalloc_" << suffix << " :alloc_" << suffix;
+        o << "\n\tbr " << this->vars[k]->name << " :alloc_" << suffix << " :notalloc_" << suffix;
         checkID = k;
         allocChecked = true;
         currF->checkedVars.insert(this->vars[k]->toString());
