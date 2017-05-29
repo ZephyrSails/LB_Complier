@@ -157,6 +157,7 @@ namespace LB {
   public:
     std::vector<LB::Instruction *> inss;
     InsScope(std::vector<std::string> & v);
+    // std::map<std::string, std::string> varMap;
     void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 

@@ -267,8 +267,9 @@ namespace LB {
     int scopeCount = 0;
     for (auto ins : this->inss) {
       if (typeid(*ins) == typeid(LB::InsScope)) {
-        ins->toIR(o, currF, path + "_" + std::to_string(scopeCount));
+        // ins->toIR(o, currF, path + "_" + std::to_string(scopeCount));
         scopeCount += 1;
+        ins->toIR(o, currF, path);
       } else {
         ins->toIR(o, currF, path);
       }

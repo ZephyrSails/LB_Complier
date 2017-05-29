@@ -60,6 +60,47 @@ void whileAnalize(LB::Function * f) {
   std::cout << "probe 3\n";
 }
 
+void scoping(LB::InsScope * scope, std::string path, std::map<std::string, std::string> map) {
+  int scopeCount = 0;
+  std::cout << "in scope: " << path << std::endl;
+  for (auto ins : scope->inss) {
+
+    if (typeid(*ins) == typeid(LB::InsScope)) {
+      scoping(dynamic_cast<LB::InsScope *>(ins), path + "_" + std::to_string(scopeCount), map);
+      scopeCount++;
+    } else if (typeid(*ins) == typeid(LB::InsType)) {
+      for (auto var : ins->vars) {
+        if (path != "") {
+          map[var->name] = var->name + path;
+          var->name += path;
+        }
+      }
+    // } else if (typeid(*ins) == typeid(LB::InsContinue)) {
+    //   std::cout << "continue\n";
+    } else {
+      for (auto var : ins->vars) {
+        std::cout << var->toString("") << " ";
+        if (var->name[0] == '%') {
+          if (map.count(var->name) > 0) {
+            var->name = map[var->name];
+          }
+
+          for (auto t : var->ts) {
+            std::cout << t->toString("") << " ";
+            if (t->name[0] == '%' && map.count(t->name) > 0) {
+              t->name = map[t->name];
+            }
+            std::cout << t->toString("") << " ";
+          }
+
+        }
+        std::cout << var->toString("") << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+}
+
 int main(int argc, char **argv) {
   std::cout << "LB o7\n";
 
@@ -83,7 +124,6 @@ int main(int argc, char **argv) {
     }
   }
 
-
   std::ofstream outputFile;
   outputFile.open("prog.a");
 
@@ -92,6 +132,10 @@ int main(int argc, char **argv) {
   std::cout << "probe0\n";
   for (auto f : p.functions) {
     whileAnalize(f);
+    std::cout << "in func: " << f->name << std::endl;
+    std::map<std::string, std::string> map;
+    scoping(f->scope, "", map);
+    std::cout << "in func: " << f->name << " scoping finished" <<std::endl;
 
     outputFile << f->ret_type->toString() << " " << f->name << " ( ";
     if (f->arguments.size() > 0) {
@@ -110,8 +154,9 @@ int main(int argc, char **argv) {
     for (auto ins : f->scope->inss) {
       // std::cout << "probe1 \n";
       if (typeid(*ins) == typeid(LB::InsScope)) {
-        ins->toIR(outputFile, f, std::to_string(scopeCount));
+        // ins->toIR(outputFile, f, std::to_string(scopeCount));
         scopeCount += 1;
+        ins->toIR(outputFile, f, "");
       } else {
         ins->toIR(outputFile, f, "");
       }
