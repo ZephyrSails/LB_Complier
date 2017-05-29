@@ -379,13 +379,16 @@ namespace LA {
     this->vars.push_back(var);
     var = new LA::Var(v[2]);
     this->vars.push_back(var);
-    // var = new LA::Var(v[3], false, true);
-    var = new LA::Var(v[3]);
+    var = new LA::Var(v[3], false, true);
+    // var = new LA::Var(v[3]);
     this->vars.push_back(var);
   }
 
   void LA::InsLength::toIR(std::ofstream &o, LA::Function * currF) {
-    this->decode(o);
+    if (this->vars[2]->name[0] == '%') {
+      this->decode(o);
+    }
+
     std::string suffix = std::to_string(rand());
     o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
     o << "\n\t" << this->vars[0]->toString() << "_" << suffix << " <- " << this->vars[0]->toString() << " >> 1";
