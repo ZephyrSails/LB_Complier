@@ -19,11 +19,13 @@ namespace L3 {
                 { TNAME::LABEL, "LABEL" },
                 { TNAME::BR, "BR" } ,
                 { TNAME::LOAD, "LOAD" },
+                { TNAME::AT, "AT" },
                 { TNAME::ASSIGN_OP, "ASSIGN_OP" }
+
               };
   public:
     enum TNAME {
-      ADD_STORE, RETURN, ASSIGN, ASSIGN_CALL ,CALL, STORE ,C_BR ,BR ,LOAD ,ASSIGN_OP, LABEL
+      AT, ADD_STORE, RETURN, ASSIGN, ASSIGN_CALL ,CALL, STORE ,C_BR ,BR ,LOAD ,ASSIGN_OP, LABEL
     };
     std::map< int, L3::Instance * > tiles;
 

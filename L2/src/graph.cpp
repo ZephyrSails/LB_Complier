@@ -237,7 +237,7 @@ namespace L2 {
     this->rebuild();
 
     // this->print();
-    // this->print_color();
+    this->print_color();
 
     std::vector< std::string > spilling_table;
 

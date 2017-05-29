@@ -14,6 +14,9 @@ namespace L3 {
       if (tile->type == L3::INS::LABEL || tile->type == L3::INS::N) {
         return (tile->type == this->type);
       }
+      if (L3::OP.count(tile->name) > 0) {
+        return (tile->name == this->name);
+      }
       return true;
     }
     return false;

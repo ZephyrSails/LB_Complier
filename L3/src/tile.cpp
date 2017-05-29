@@ -45,6 +45,19 @@ namespace L3 {
     this->tiles[TNAME::ADD_STORE] = new L3::Store(v);
     v = {"D1", "V1", "+", "8"};
     this->tiles[TNAME::ADD_STORE]->instances[0]->instances.push_back(new L3::Op(v));
+    // v3 <- v3 * 8
+  	// v1 <- v2 + v3
+    // (v1 @ v2 v3 8)
+
+    v = {"V1", "V2", "+", "V3"};
+    this->tiles[TNAME::AT] = new L3::Var("V1");
+    this->tiles[TNAME::AT]->instances.push_back(new L3::Op(v));
+    v = {"V3", "V3", "*", "8"};
+    this->tiles[TNAME::AT]->instances[0]->instances[1]->instances.push_back(new L3::Op(v));
+
+    // this->tiles[TNAME::AT] = new L3::Var("V1");
+
+
   }
 
   std::string L3::Tile::Translate(int tIndex, L3::Instance * ins, std::string f_name) {
@@ -53,6 +66,10 @@ namespace L3 {
     L3::Instance * tile = this->tiles[tIndex];
 
     switch (tIndex) {
+      case TNAME::AT:
+                // return "";
+                return "\n\t\t(" + ins->name + " @ " + ins->instances[0]->instances[0]->name + " " + ins->instances[0]->instances[1]->name + " " + ins->instances[0]->instances[1]->instances[0]->instances[1]->name + ")";
+
       case TNAME::RETURN:
                 return ins->toString();
 
@@ -94,6 +111,7 @@ namespace L3 {
                 // L3::Instance address = ins->instances[0]->instances[0];
                 res += "\n\t\t((mem " + ins->instances[0]->instances[0]->instances[0]->name + " " + ins->instances[0]->instances[0]->instances[1]->name + ") <- " + ins->instances[1]->name + ")";
                 return res;
+
 
       default:
                 return "";
