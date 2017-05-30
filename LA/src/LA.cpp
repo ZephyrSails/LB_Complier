@@ -71,7 +71,7 @@ namespace LA {
     int count = 0;
     for (auto d : de) {
       if (d->type->type == LA::TYPE::VAR) {
-        if (currF->decodedVars.count(d->toString()) > 0) {
+        if (currF->decodedVars.count(d->toString()) == 0) {
           o << "\n\t" << d->toString() << LA::DECODE << " <- " << d->toString() << " >> 1";
           currF->decodedVars.insert(d->toString());
         }
