@@ -102,8 +102,8 @@ namespace L2 {
     L2::liveness_analysis(func, GEN, KILL, IN, OUT);
 
     // std::cout << "adding regs\n";
-    // for (int k = 0; k < n; k++) {
-    for (int k = n-1; k >= 0; k--) {
+    for (int k = 0; k < n; k++) {
+    // for (int k = n-1; k >= 0; k--) {
       for (int j = 0; j < func->instructions[k]->items.size(); j++) {
         L2::Item * i = func->instructions[k]->items[j];
         if (i->type == L2::ITEM::VAR) {
