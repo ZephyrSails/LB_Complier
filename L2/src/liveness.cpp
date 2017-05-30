@@ -50,7 +50,7 @@ namespace L2 {
   void gen_gen_kill(std::set<std::string> * GEN, std::set<std::string> * KILL, L2::Instruction * i) {
     switch (i->type) {
       case L2::INS::RETURN:
-              GEN->insert(callee_save_regs.begin(), callee_save_regs.end());
+              // GEN->insert(callee_save_regs.begin(), callee_save_regs.end());
               GEN->insert("rax");
               break;
       // case L2::INS::LABEL_INS:
