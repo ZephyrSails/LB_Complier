@@ -303,20 +303,25 @@ namespace LA {
     bool allocChecked = false;
     bool checkID;
     for (int k = 0; k < 2; k++) {
-      if (this->vars[k]->ts.size() > 0 && currF->checkedVars.count(this->vars[k]->toString()) == 0) {
-        o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
-        o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
+      if (this->vars[k]->ts.size() > 0) {
+        if (currF->checkedVars.count(this->vars[k]->name) == 0) {
+          o << "\n\t%not_zero_" << suffix << " <- 0 < " << this->vars[k]->name;
+          o << "\n\tbr %not_zero_" << suffix << " :alloc_" << suffix << " :notalloc_" << suffix;
+        }
         // o << "\n\tbr " << this->vars[k]->name << " :alloc_" << suffix << " :notalloc_" << suffix;
         checkID = k;
         allocChecked = true;
-        currF->checkedVars.insert(this->vars[k]->toString());
+
       }
     }
     if (allocChecked) {
-      o << "\n\t:notalloc_" << suffix;
-      o << "\n\tcall array-error(0, 0)";
-      o << "\n\tbr :alloc_" << suffix;
-      o << "\n\t:alloc_" << suffix;
+      if (currF->checkedVars.count(this->vars[checkID]->name) == 0) {
+        o << "\n\t:notalloc_" << suffix;
+        o << "\n\tcall array-error(0, 0)";
+        o << "\n\tbr :alloc_" << suffix;
+        o << "\n\t:alloc_" << suffix;
+        currF->checkedVars.insert(this->vars[checkID]->name);
+      }
 
       for (int j = 0; j < this->vars[checkID]->ts.size(); j++) {
         // o << "\n\t%l_" << j << "_" << suffix << " <- length " << this->vars[checkID]->name << " " << j;

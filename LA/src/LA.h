@@ -168,6 +168,7 @@ namespace LA {
     std::set<std::string> checkedVars = {};
     void getLengthOfArr(std::ofstream &o, LA::Var * arr, std::string suffix, int j);
     std::map<std::string, std::string> checkedLen = {};
+    // std::map<std::string, std::string> checkedAlloc = {};
   };
 
   class Program {
