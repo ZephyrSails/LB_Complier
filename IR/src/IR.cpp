@@ -298,7 +298,7 @@ namespace IR {
       // 16 + (3 * 8) + (k * D2 * D3 + i * D3 + j)
       for (int k = 2; k <= d; k++) {
         std::cout << "printAddr::: " << this->name + "_" + std::to_string(d-k) << "\n";
-        if (currF->lengthMap.count(this->name + "_" + std::to_string(d-k))) {
+        if (currF->lengthMap.count(this->name + "_" + std::to_string(d-k)) > 0) {
           o << "\n\tD" << k << "_" << suffix << " <- " << currF->lengthMap[this->name + "_" + std::to_string(d-k)];
         } else {
           o << "\n\tADDR_D" << k << "_" << suffix << " <- " << this->toString() << " + " << (k + 1) * 8;

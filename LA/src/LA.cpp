@@ -343,10 +343,13 @@ namespace LA {
     // std::cout << "hello size(): " << this->checkedLen.size() << "\n";
     if (this->checkedLen.count(arr->name + "_" + std::to_string(j)) == 0) {
       // std::cout << "hello count = 0 \n";
-      o << "\n\t%l_" << j << "_" << suffix << " <- length " << arr->name << " " << j;
-      o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
-      o << "\n\t%validLen_" << j << "_" << suffix << " <- " << arr->ts[j]->toString() << " < %l_" << j << "_" << suffix;
-      this->checkedLen[arr->name + "_" + std::to_string(j)] = "%l_" + std::to_string(j) + "_" + suffix;
+      // o << "\n\t%l_" << j << "_" << suffix << " <- length " << arr->name << " " << j;
+      // o << "\n\t%l_" << j << "_" << suffix << " <- " << "%l_" << j << "_" << suffix << " >> 1";
+      o << "\n\t" << arr->name << "_" << j << " <- length " << arr->name << " " << j;
+      o << "\n\t" << arr->name << "_" << j << " <- " << arr->name << "_" << j << " >> 1";
+      o << "\n\t%validLen_" << j << "_" << suffix << " <- " << arr->ts[j]->toString() << " < " << arr->name << "_" << j;
+      // this->checkedLen[arr->name + "_" + std::to_string(j)] = "%l_" + std::to_string(j) + "_" + suffix;
+      this->checkedLen[arr->name + "_" + std::to_string(j)] = arr->name + "_" + std::to_string(j);
     } else {
       // std::cout << "hello count > 0 \n";
       o << "\n\t%validLen_" << j << "_" << suffix << " <- " << arr->ts[j]->toString() << " < " << this->checkedLen[arr->name + "_" + std::to_string(j)];

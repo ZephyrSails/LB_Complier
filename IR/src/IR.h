@@ -43,7 +43,7 @@ namespace IR {
     Type(std::string t);
   };
 
-  struct Function;
+  class Function;
 
   class Var {
   public:
@@ -139,7 +139,8 @@ namespace IR {
     BasicBlock(std::string name);
   };
 
-  struct Function {
+  class Function {
+  public:
     Type * ret_type;
     std::string name;
     std::map< std::string, IR::Type * > type_map;
