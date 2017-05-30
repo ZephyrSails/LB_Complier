@@ -332,14 +332,15 @@ namespace LA {
 
         o << "\n\tbr %validLen_" << j << "_" << suffix << " :validLen_" << j << "_" << suffix << " :invalidLen_" << j << "_"  << suffix;
         o << "\n\t:invalidLen_" << j << "_" << suffix;
-        // o << "\n\t%err_index_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString();
+        o << "\n\t%err_index_" << suffix << " <- " << this->vars[checkID]->ts[j]->toString();
+        o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " << 1";
+        o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " + 1";
+        // o << "\n\t" << this->vars[checkID]->ts[j]->toString() << " <- " << this->vars[checkID]->ts[j]->toString() << " << 1";
+        // o << "\n\t" << this->vars[checkID]->ts[j]->toString() << " <- " << this->vars[checkID]->ts[j]->toString() << " + 1";
         // o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " << 1";
         // o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " + 1";
-        o << "\n\t" << this->vars[checkID]->ts[j]->toString() << " <- " << this->vars[checkID]->ts[j]->toString() << " << 1";
-        o << "\n\t" << this->vars[checkID]->ts[j]->toString() << " <- " << this->vars[checkID]->ts[j]->toString() << " + 1";
-        // o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " << 1";
-        // o << "\n\t%err_index_" << suffix << " <- %err_index_" << suffix << " + 1";
-        o << "\n\tcall array-error(" << this->vars[checkID]->name << ", " << this->vars[checkID]->ts[j]->toString() << ")";
+        o << "\n\tcall array-error(" << this->vars[checkID]->name << ", %err_index_" << suffix << ")";
+        // o << "\n\tcall array-error(" << this->vars[checkID]->name << ", " << this->vars[checkID]->ts[j]->toString() << ")";
         o << "\n\tbr :validLen_" << j << "_" << suffix;
         o << "\n\t:validLen_" << j << "_" << suffix;
       }
