@@ -23,7 +23,8 @@
 
 namespace L2 {
 
-  const std::vector<std::string> REGS = { "r10", "r11", "r8", "r9", "rax", "rcx", "rdi", "rdx", "rsi", "r12", "r13", "r14", "r15", "rbp", "rbx" };
+  // const std::vector<std::string> REGS = { "r10", "r11", "r8", "r9", "rax", "rcx", "rdi", "rdx", "rsi", "r12", "r13", "r14", "r15", "rbp", "rbx" };
+  const std::vector<std::string> REGS = { "r12", "r13", "r14", "r15", "rbp", "rbx", "r10", "r11", "r8", "r9", "rax", "rcx", "rdi", "rdx", "rsi" };
   const std::vector<std::string> CALEES = { "r12", "r13", "r14", "r15", "rbp", "rbx" };
   // const std::vector< std::string > sys
 
