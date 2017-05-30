@@ -27,7 +27,11 @@ void output_instruction(L2::Instruction * i, std::ofstream * outputFile, L2::Gra
 
   switch (i->type) {
     case L2::INS::RETURN:
-            *outputFile << "(return)";
+            *outputFile << "(" << L2::CALEES[0] << " <- (mem rsp " << locals * 8 << "))";
+            for (int k = 1; k < 6; k++) {
+              *outputFile << "\n\t\t(" << L2::CALEES[k] << " <- (mem rsp " << (locals + k) * 8 << "))";
+            }
+            *outputFile << "\n\t\t(return)";
             break;
     case L2::INS::LABEL_INS:
             *outputFile << ":" << i->items[0]->name;
@@ -70,9 +74,18 @@ void output_instruction(L2::Instruction * i, std::ofstream * outputFile, L2::Gra
   *outputFile << "\n";
 }
 
+void save_callee_save(L2::Function * f, int local, std::ofstream & o) {
+  for (int k = 0; k < 6; k++) {
+    o << "\n\t\t((mem rsp " << (local + k) * 8 << ") <- " << L2::CALEES[k] << ")";
+  }
+  o << "\n";
+}
+
 
 void output_function(L2::Function * f, std::ofstream * outputFile, L2::Graph * g) {
-  *outputFile << "\t(:" << f->name << "\n\t\t" << f->arguments << " " << f->locals << "\n";
+  *outputFile << "\t(:" << f->name << "\n\t\t" << f->arguments << " " << f->locals + 6 << "\n";
+
+  save_callee_save(f, f->locals, *outputFile);
 
   for (int k = 0; k < f->instructions.size(); k++) {
     if (k + 3 < f->instructions.size()
