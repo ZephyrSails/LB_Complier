@@ -51,7 +51,7 @@ namespace L2 {
     switch (i->type) {
       case L2::INS::RETURN:
               // GEN->insert(callee_save_regs.begin(), callee_save_regs.end());
-              // GEN->insert("rax");
+              GEN->insert("rax");
               break;
       // case L2::INS::LABEL_INS:
       //         break;
