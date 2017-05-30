@@ -161,27 +161,27 @@ int main(int argc, char **argv) {
 
       g = new L2::Graph(f, 15);
 
-      bool Furthercoales = true;
-      while (Furthercoales) {
-        std::cout << Furthercoales << "\n";
-        Furthercoales = false;
-
-
-        for (int k = 15; k < g->neighbours.size(); k++) {
-          for (int j = k+1; j < g->neighbours.size(); j++) {
-            if (g->neighbours[k] == g->neighbours[j]) {
-              g->coalescing(f, g->value[k], g->value[j]);
-              g = new L2::Graph(f, 15);
-              Furthercoales = true;
-              std::cout << "total color used " << 15 + spilling_table.size() << " need further coales\n";
-              break;
-            }
-          }
-          if (Furthercoales) {
-            break;
-          }
-        }
-      }
+      // bool Furthercoales = true;
+      // while (Furthercoales) {
+      //   std::cout << Furthercoales << "\n";
+      //   Furthercoales = false;
+      //
+      //
+      //   for (int k = 15; k < g->neighbours.size(); k++) {
+      //     for (int j = k+1; j < g->neighbours.size(); j++) {
+      //       if (g->neighbours[k] == g->neighbours[j]) {
+      //         g->coalescing(f, g->value[k], g->value[j]);
+      //         g = new L2::Graph(f, 15);
+      //         Furthercoales = true;
+      //         std::cout << "total color used " << 15 + spilling_table.size() << " need further coales\n";
+      //         break;
+      //       }
+      //     }
+      //     if (Furthercoales) {
+      //       break;
+      //     }
+      //   }
+      // }
 
       spilling_table = g->coloring();
       std::cout << "total color used " << 15 + spilling_table.size() << "\n";
