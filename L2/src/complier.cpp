@@ -154,21 +154,24 @@ int main(int argc, char **argv) {
 
   for (auto f : p.functions) {
     std::vector< std::string > spilling_table;
-    L2::Graph g;
+    L2::Graph * g;
 
     do {
       std::cout << f->name << ":\n";
 
-      g = L2::Graph(f, 15);
+      g = new L2::Graph(f, 15);
 
       bool Furthercoales = true;
       while (Furthercoales) {
-        bool Furthercoales = false;
-        for (int k = 15; k < g.neighbours.size(); k++) {
-          for (int j = k+1; j < g.neighbours.size(); j++) {
-            if (g.neighbours[k] == g.neighbours[j]) {
-              g.coalescing(f, g.value[k], g.value[j]);
-              g = L2::Graph(f, 15);
+        std::cout << Furthercoales << "\n";
+        Furthercoales = false;
+
+
+        for (int k = 15; k < g->neighbours.size(); k++) {
+          for (int j = k+1; j < g->neighbours.size(); j++) {
+            if (g->neighbours[k] == g->neighbours[j]) {
+              g->coalescing(f, g->value[k], g->value[j]);
+              g = new L2::Graph(f, 15);
               Furthercoales = true;
               std::cout << "total color used " << 15 + spilling_table.size() << " need further coales\n";
               break;
@@ -180,8 +183,7 @@ int main(int argc, char **argv) {
         }
       }
 
-
-      spilling_table = g.coloring();
+      spilling_table = g->coloring();
       std::cout << "total color used " << 15 + spilling_table.size() << "\n";
 
       if (spilling_table.size() > 0) {
@@ -189,7 +191,7 @@ int main(int argc, char **argv) {
       }
     } while (spilling_table.size() > 0);
 
-    output_function(f, &outputFile, &g);
+    output_function(f, &outputFile, g);
   }
 
   outputFile << ")" << "\n";
