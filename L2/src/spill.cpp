@@ -131,7 +131,7 @@ namespace L2 {
     }
   }
 
-  void spill(L2::Function * f, std::vector< std::string > spilling_table) {
+  void spill(L2::Function * f, std::vector<std::string> spilling_table) {
     for (int k = 0; k < spilling_table.size(); k++) {
 
       L2::spill_var(f, &spilling_table[k]);

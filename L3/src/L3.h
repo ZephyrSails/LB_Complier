@@ -107,7 +107,7 @@ namespace L3 {
   };
 
 
-  struct Function {
+  class Function {
     std::string name;
     std::vector< L3::Instance * > arguments;
     std::vector< L3::Instance * > instructions;

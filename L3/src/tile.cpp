@@ -105,6 +105,12 @@ namespace L3 {
                 return res;
 
       case TNAME::ASSIGN_OP:
+                // if (ins->instances[0]->name.find("_DECODE") > 0
+                //   && ins->instances[0]->name == ">>"
+                //   && ins->instances[0]->instances[0]->type == L3::INS::VAR;
+                //   && ins->instances[0]->instances[1]->name == "1";
+                //   && currF->decodedVars.count(ins->instances[0]->instances[0]->name) == 0
+                //   && OUT.count(ins->instances[0]->instances[0]->name) == 0
                 return ins->toString();
 
       case TNAME::ADD_STORE:

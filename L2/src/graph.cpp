@@ -70,6 +70,16 @@ namespace L2 {
 
   Graph::Graph() {}
 
+  void Graph::coalescing(L2::Function *f, std::string k, std::string j) {
+    for (auto ins : f->instructions) {
+      for (auto item : ins->items) {
+        if (item->name == k) {
+          item->name = j;
+        }
+      }
+    }
+  }
+
   Graph::Graph(L2::Function *func, int K) {
     // 1 node per variable
     // Registers are considered variables
@@ -237,7 +247,7 @@ namespace L2 {
     this->build_stack();
     this->rebuild();
 
-    // this->print();
+    this->print();
     // this->print_color();
 
     std::vector< std::string > spilling_table;

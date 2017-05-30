@@ -17,14 +17,18 @@ namespace L2 {
     std::vector< std::string > coloring();
 
     std::string get_color(std::string reg);
+    void coalescing(L2::Function *f, std::string k, std::string j);
+    std::vector< std::set < int > > neighbours;
+    std::map< int, std::string > value;
+    void analyze(L2::Function *func);
 
   private:
     int K;
     int TopColor;
 
-    std::vector< std::set < int > > neighbours;
+    // std::vector< std::set < int > > neighbours;
     std::map< std::string, int > index;
-    std::map< int, std::string > value;
+    // std::map< int, std::string > value;
     std::set< std::string > hold; // to avoid mutiple insert
 
     std::vector< std::tuple< int, int > > order;
@@ -41,7 +45,7 @@ namespace L2 {
     void add_vars(std::set <std::string> VARS);
     void add_edges(std::set <std::string> VARS);
     void add_edges(std::set <std::string> VARS1, std::set <std::string> VARS2);
-    void analyze(L2::Function *func);
+
     void print();
     void print_color();
     // coloring
