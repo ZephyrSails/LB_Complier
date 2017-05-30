@@ -75,13 +75,22 @@ void output_function(L2::Function * f, std::ofstream * outputFile, L2::Graph * g
   *outputFile << "\t(:" << f->name << "\n\t\t" << f->arguments << " " << f->locals << "\n";
 
   for (int k = 0; k < f->instructions.size(); k++) {
-    if (f->instructions[k]->type == L2::INS::MEM_START && f->instructions[k+1]->type == L2::INS::W_START
+    if (k + 3 < f->instructions.size()
+        && f->instructions[k]->type == L2::INS::MEM_START && f->instructions[k+1]->type == L2::INS::W_START
+        && f->instructions[k+3]->type == L2::INS::MEM_START
         && (f->instructions[k+1]->items[1]->type == L2::ITEM::REGISTER || f->instructions[k+1]->items[1]->type == L2::ITEM::VAR)
         && f->instructions[k+1]->items[1]->value != -1 && warp_item(f->instructions[k]->items[0], g) == "rsp"
+
         && warp_item(f->instructions[k+1]->items[1], g) == "rsp"
         && std::to_string(f->instructions[k]->items[0]->value) == std::to_string(f->instructions[k+1]->items[1]->value)
         && f->instructions[k]->op == f->instructions[k+1]->op
-        && warp_item(f->instructions[k]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)) {
+        && warp_item(f->instructions[k]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)
+
+        && warp_item(f->instructions[k+3]->items[0], g) == "rsp"
+        && std::to_string(f->instructions[k+3]->items[0]->value) == std::to_string(f->instructions[k+1]->items[1]->value)
+        && f->instructions[k+3]->op == f->instructions[k+1]->op
+        && warp_item(f->instructions[k+3]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)
+      ) {
           k++;
         }
     else {
