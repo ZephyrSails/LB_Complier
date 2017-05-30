@@ -67,7 +67,7 @@ namespace LA {
     virtual std::vector<LA::Var *> toEncode() = 0;
     virtual std::vector<LA::Var *> toDecode() = 0;
     void encode(std::ofstream &o);
-    void decode(std::ofstream &o);
+    void decode(std::ofstream &o, LA::Function * currF);
   };
 
   class InsBr: public Instruction {
@@ -168,6 +168,7 @@ namespace LA {
     std::set<std::string> checkedVars = {};
     void getLengthOfArr(std::ofstream &o, LA::Var * arr, std::string suffix, int j);
     std::map<std::string, std::string> checkedLen = {};
+    std::set<std::string> decodedVars = {};
     // std::map<std::string, std::string> checkedAlloc = {};
   };
 

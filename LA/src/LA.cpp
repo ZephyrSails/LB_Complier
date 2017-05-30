@@ -65,13 +65,17 @@ namespace LA {
    // Ins
   ///////
 
-  void LA::Instruction::decode(std::ofstream &o) {
+  void LA::Instruction::decode(std::ofstream &o, LA::Function * currF) {
     std::vector<LA::Var *> de;
     de = this->toDecode();
     int count = 0;
     for (auto d : de) {
       if (d->type->type == LA::TYPE::VAR) {
-        o << "\n\t" << d->toString() << LA::DECODE << " <- " << d->toString() << " >> 1";
+        if (currF->decodedVars.count(d->toString()) > 0) {
+          o << "\n\t" << d->toString() << LA::DECODE << " <- " << d->toString() << " >> 1";
+          currF->decodedVars.insert(d->toString());
+        }
+
         d->name += LA::DECODE;
       } else if (d->type->type == LA::TYPE::N) {
         o << "\n\t%tempN" << count << LA::DECODE << " <- " << d->toString() << " >> 1";
@@ -101,7 +105,7 @@ namespace LA {
   }
 
   void LA::InsBr::toIR(std::ofstream &o, LA::Function * currF) {
-    this->decode(o);
+    this->decode(o, currF);
     o << "\n\tbr";
     for (auto v : this->vars) {
       o << " " << v->toString();
@@ -198,7 +202,7 @@ namespace LA {
   }
 
   void LA::InsOpAssign::toIR(std::ofstream &o, LA::Function * currF) {
-    this->decode(o);
+    this->decode(o, currF);
     o << "\n\t" << this->vars[0]->toString() << " <- " << this->vars[1]->toString() << " " << this->vars[2]->toString() << " " << this->vars[3]->toString();
 
     this->encode(o);
@@ -298,7 +302,7 @@ namespace LA {
   }
 
   void LA::InsAssign::toIR(std::ofstream &o, LA::Function * currF) {
-    this->decode(o);
+    this->decode(o, currF);
     std::string suffix = std::to_string(rand());
     bool allocChecked = false;
     bool checkID;
@@ -399,7 +403,7 @@ namespace LA {
 
   void LA::InsLength::toIR(std::ofstream &o, LA::Function * currF) {
     if (this->vars[2]->name[0] == '%') {
-      this->decode(o);
+      this->decode(o, currF);
     }
 
     std::string suffix = std::to_string(rand());
