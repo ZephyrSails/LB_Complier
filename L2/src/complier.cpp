@@ -74,10 +74,25 @@ void output_instruction(L2::Instruction * i, std::ofstream * outputFile, L2::Gra
 void output_function(L2::Function * f, std::ofstream * outputFile, L2::Graph * g) {
   *outputFile << "\t(:" << f->name << "\n\t\t" << f->arguments << " " << f->locals << "\n";
 
-  for (auto i : f->instructions) {
-    // std::cout << "i->type: " << i->type << "\n";
-    output_instruction(i, outputFile, g, f->locals);
+  for (int k = 0; k < f->instructions.size(); k++) {
+    if (f->instructions[k]->type == L2::INS::MEM_START && f->instructions[k+1]->type == L2::INS::W_START
+        && (f->instructions[k+1]->items[1]->type == L2::ITEM::REGISTER || f->instructions[k+1]->items[1]->type == L2::ITEM::VAR)
+        && f->instructions[k+1]->items[1]->value != -1 && warp_item(f->instructions[k]->items[0], g) == "rsp"
+        && warp_item(f->instructions[k+1]->items[1], g) == "rsp"
+        && std::to_string(f->instructions[k]->items[0]->value) == std::to_string(f->instructions[k+1]->items[1]->value)
+        && f->instructions[k]->op == f->instructions[k+1]->op
+        && warp_item(f->instructions[k]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)) {
+          k++;
+        }
+    else {
+      output_instruction(f->instructions[k], outputFile, g, f->locals);
+    }
+
   }
+  // for (auto i : f->instructions) {
+  //   // std::cout << "i->type: " << i->type << "\n";
+  //   output_instruction(i, outputFile, g, f->locals);
+  // }
 
   *outputFile << "\t)\n\n";
 }

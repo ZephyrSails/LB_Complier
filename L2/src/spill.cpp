@@ -23,7 +23,7 @@ namespace L2 {
       L2::Item * dummy_var = new L2::Item();
       dummy_var->type = L2::ITEM::VAR;
       dummy_var->name = spill_str;
-      
+
       L2::Item * dummy_mem = new L2::Item();
       dummy_mem->type = L2::ITEM::REGISTER;
       dummy_mem->name = "rsp";
@@ -117,16 +117,12 @@ namespace L2 {
       }
 
       if (read->items.size() > 0 || write->items.size() > 0) {
-
-
         if (read->items.size() > 0) {
-          // std::cout << std::to_string(read->items.size()) << "read?\n";
           f->instructions.insert(f->instructions.begin()+k, read);
           k++;
         }
 
         if (write->items.size() > 0) {
-          // std::cout << std::to_string(write->items.size()) << "write?\n";
           f->instructions.insert(f->instructions.begin()+k+1, write);
           k++;
         }
