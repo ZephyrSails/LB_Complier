@@ -104,11 +104,13 @@ void output_function(L2::Function * f, std::ofstream * outputFile, L2::Graph * g
         && warp_item(f->instructions[k+3]->items[0], g) == "rsp"
         && std::to_string(f->instructions[k+3]->items[0]->value) == std::to_string(f->instructions[k+1]->items[1]->value)
         && f->instructions[k+3]->op == f->instructions[k+1]->op
-        && warp_item(f->instructions[k+3]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)
-      ) {
-          k++;
-        }
-    else {
+        && warp_item(f->instructions[k+3]->items[1], g) == warp_item(f->instructions[k+1]->items[0], g)) {
+      k++;
+    } else if (k + 1 < f->instructions.size()
+            && f->instructions[k]->type == L2::INS::GOTO && f->instructions[k+1]->type == L2::INS::LABEL_INS
+            && f->instructions[k]->items[0]->name == f->instructions[k+1]->items[0]->name) {
+      // do nothing, do not jump
+    } else {
       output_instruction(f->instructions[k], outputFile, g, f->locals);
     }
 
