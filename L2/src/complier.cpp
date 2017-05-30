@@ -170,6 +170,7 @@ int main(int argc, char **argv) {
               g.coalescing(f, g.value[k], g.value[j]);
               g = L2::Graph(f, 15);
               Furthercoales = true;
+              std::cout << "total color used " << 15 + spilling_table.size() << "need further coales\n";
             }
           }
         }
