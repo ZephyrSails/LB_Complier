@@ -391,8 +391,10 @@ namespace LA {
 
     std::string suffix = std::to_string(rand());
     o << "\n\t" << this->vars[0]->toString() << " <- length " << this->vars[1]->toString() << " " << this->vars[2]->toString();
-    o << "\n\t" << this->vars[0]->toString() << "_" << suffix << " <- " << this->vars[0]->toString() << " >> 1";
-    currF->checkedLen[this->vars[1]->toString() + "_" + this->vars[2]->toString()] = this->vars[0]->toString() + "_" + suffix;
+    if (this->vars[2]->name[0] != '%') {
+      o << "\n\t" << this->vars[1]->toString() << "_" << this->vars[2]->toString() << " <- " << this->vars[0]->toString() << " >> 1";
+      currF->checkedLen[this->vars[1]->toString() + "_" + this->vars[2]->toString()] = this->vars[1]->toString() + "_" + this->vars[2]->toString();
+    }
   }
 
   std::vector<LA::Var *> LA::InsLength::toEncode() {

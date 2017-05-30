@@ -65,7 +65,7 @@ namespace IR {
     // std::set<std::string> IN;
     // std::set<std::string> OUT;
     std::string op;
-    std::vector< IR::Var * > vars;
+    std::vector<IR::Var *> vars;
 
     virtual void toL3(std::ofstream &outputFile, IR::Function * currF) = 0;
   };
@@ -145,6 +145,7 @@ namespace IR {
     std::map< std::string, IR::Type * > type_map;
     std::vector< IR::Var * > arguments;
     std::vector< IR::BasicBlock * > bbs;
+    std::map<std::string, std::string> lengthMap = {};
   };
 
   struct Program {

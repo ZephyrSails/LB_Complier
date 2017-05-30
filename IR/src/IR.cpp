@@ -176,6 +176,12 @@ namespace IR {
       o << "\n\t" << this->vars[0]->toString() << " <- load addr_" << suffix;
       o << "\n";
     }
+
+    if (this->vars[2]->name[0] != '%') {
+      // o << "\n\t"
+      std::cout << "length::: " << this->vars[1]->name + "_" + this->vars[2]->name << "\n";
+      currF->lengthMap[this->vars[1]->name + "_" + this->vars[2]->name] = this->vars[1]->toString() + "_" + this->vars[2]->toString();
+    }
   }
 
   IR::InsNewArray::InsNewArray(std::vector<std::string> & v) {
@@ -286,13 +292,19 @@ namespace IR {
       o << "\n\taddr_" << suffix << " <- " << this->toString() << " + " << (std::stoll(this->ts[0]->name) * 8) + 8;
     } else {
 
-      // A[D1][D2][D3]
+      // A[D3][D2][D1]
+      // A[0][1][2]
       // A[k][i][j]
       // 16 + (3 * 8) + (k * D2 * D3 + i * D3 + j)
       for (int k = 2; k <= d; k++) {
-        o << "\n\tADDR_D" << k << "_" << suffix << " <- " << this->toString() << " + " << (k + 1) * 8;
-        o << "\n\tD" << k << "_" << suffix << "_ <- load " << "ADDR_D" << k << "_" << suffix;
-        o << "\n\tD" << k << "_" << suffix << " <- " << "D" << k << "_" << suffix << "_ >> 1";
+        std::cout << "printAddr::: " << this->name + "_" + std::to_string(d-k) << "\n";
+        if (currF->lengthMap.count(this->name + "_" + std::to_string(d-k))) {
+          o << "\n\tD" << k << "_" << suffix << " <- " << currF->lengthMap[this->name + "_" + std::to_string(d-k)];
+        } else {
+          o << "\n\tADDR_D" << k << "_" << suffix << " <- " << this->toString() << " + " << (k + 1) * 8;
+          o << "\n\tD" << k << "_" << suffix << "_ <- load " << "ADDR_D" << k << "_" << suffix;
+          o << "\n\tD" << k << "_" << suffix << " <- " << "D" << k << "_" << suffix << "_ >> 1";
+        }
       }
 
       o << "\n\toffset_" << suffix << " <- " << this->ts[d-1]->toString() << " + " << (2 + d);
