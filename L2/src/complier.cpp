@@ -161,15 +161,20 @@ int main(int argc, char **argv) {
 
       g = L2::Graph(f, 15);
 
-      for (int k = 15; k < g.neighbours.size(); k++) {
-        for (int j = k+1; j < g.neighbours.size(); j++) {
-          if (g.neighbours[k] == g.neighbours[j]) {
-            g.coalescing(f, g.value[k], g.value[j]);
-            g = L2::Graph(f, 15);
-            g.analyze(f);
+      bool Furthercoales = true;
+      while (Furthercoales) {
+        bool Furthercoales = false;
+        for (int k = 15; k < g.neighbours.size(); k++) {
+          for (int j = k+1; j < g.neighbours.size(); j++) {
+            if (g.neighbours[k] == g.neighbours[j]) {
+              g.coalescing(f, g.value[k], g.value[j]);
+              g = L2::Graph(f, 15);
+              Furthercoales = false;
+            }
           }
         }
       }
+
 
       spilling_table = g.coloring();
       std::cout << "total color used " << 15 + spilling_table.size() << "\n";
