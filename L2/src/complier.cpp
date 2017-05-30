@@ -169,7 +169,7 @@ int main(int argc, char **argv) {
             if (g.neighbours[k] == g.neighbours[j]) {
               g.coalescing(f, g.value[k], g.value[j]);
               g = L2::Graph(f, 15);
-              Furthercoales = false;
+              Furthercoales = true;
             }
           }
         }
