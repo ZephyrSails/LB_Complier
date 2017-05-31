@@ -66,91 +66,91 @@ namespace LB {
     std::vector< LB::Var * > vars;
     LB::Instruction * loop;
 
-    virtual void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path) = 0;
+    virtual void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path) = 0;
   };
 
   class InsIf: public Instruction {
   public:
     InsIf(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsWhile: public Instruction {
   public:
     InsWhile(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsReturn: public Instruction {
   public:
     InsReturn(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsLength: public Instruction {
   public:
     InsLength(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsAssignCall: public Instruction {
   public:
     InsAssignCall(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsAssign: public Instruction {
   public:
     InsAssign(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsOpAssign: public Instruction {
   public:
     InsOpAssign(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsType: public Instruction {
   public:
     InsType(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsCall: public Instruction {
   public:
     InsCall(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsNewArray: public Instruction {
   public:
     InsNewArray(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsNewTuple: public Instruction {
   public:
     InsNewTuple(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsLabel: public Instruction {
   public:
     InsLabel(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsContinue: public Instruction {
   public:
     InsContinue(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsBreak: public Instruction {
   public:
     InsBreak(std::vector<std::string> & v);
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   class InsScope: public Instruction {
@@ -158,7 +158,7 @@ namespace LB {
     std::vector<LB::Instruction *> inss;
     InsScope(std::vector<std::string> & v);
     // std::map<std::string, std::string> varMap;
-    void toIR(std::ofstream &outputFile, LB::Function * currF, std::string path);
+    void toLA(std::ofstream &outputFile, LB::Function * currF, std::string path);
   };
 
   struct Function {
