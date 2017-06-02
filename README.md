@@ -9,7 +9,7 @@ The whole system compile LB language to assembly language. The compiling process
 5. LA -> IR: This step will encode values and check array access, also generating basic blocks used in IR.
 6. LB -> LA: LB introduced nested scope and control structure (if & while loop). LB -> LA will linearize the scopes and represent the control structure properly.
 
-The is a contest after the quarter to see whose complier can generate more efficient code, my code won. Some useful optimization are as follow:
+There is a contest after the quarter to see whose complier can generate more efficient code, my code won. Some useful optimization are as follow:
 
 1. LA -> IR: when array access is checked in one function, the length of dimension is stored, this will save memory access in the next time the length is used.
 2. LA -> IR: if an Array allocation is checked, do not check it again later. (may introduce bug though, "later" should means later in the same control flow, but my code didn't actually take care of it.)
